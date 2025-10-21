@@ -20,42 +20,34 @@ export default function CustomerFavorites() {
         const customerFavoriteProducts = data.data.products
           .filter(product => product.customer_picks === true)
           .map(product => {
-            // Get the first variant for pricing
             const firstVariant = product.variants?.[0];
             
-            // Handle different variant structures to get prices
             let originalPrice = 0;
             let salePrice = 0;
             
             if (firstVariant) {
-              // If variant has units array (like the first two products)
               if (firstVariant.units && firstVariant.units.length > 0) {
                 const firstUnit = firstVariant.units[0];
                 originalPrice = firstUnit.original_price || 0;
                 salePrice = firstUnit.price || 0;
               } 
-              // If variant has direct price properties (like other products)
               else if (firstVariant.original_price !== undefined) {
                 originalPrice = firstVariant.original_price;
                 salePrice = firstVariant.price;
               }
             }
             
-            // Use minPrice/maxPrice if available and no variant prices found
             if (originalPrice === 0 && product.minPrice !== null) {
               originalPrice = product.maxPrice || product.minPrice || 0;
               salePrice = product.minPrice || 0;
             }
 
-            // Fix image URL handling
             let imageUrl = '';
             if (product.images && product.images.length > 0) {
-              // If images is an array of strings
               if (typeof product.images[0] === 'string') {
                 imageUrl = getImageUrl(product.images[0]);
                 console.log('Generated Image URL:', imageUrl); // Debug log
               } 
-              // If images is an array of objects with url property
               else if (product.images[0].url) {
                 imageUrl = getImageUrl(product.images[0].url);
                 console.log('Generated Image URL:', imageUrl); // Debug log
@@ -89,12 +81,12 @@ export default function CustomerFavorites() {
     const [imgLoaded, setImgLoaded] = useState(false);
     
     const handleError = () => {
-      console.log('Image failed to load:', src); // Debug log
+      console.log('Image failed to load:', src); 
       setImgError(true);
     };
 
     const handleLoad = () => {
-      console.log('Image loaded successfully:', src); // Debug log
+      console.log('Image loaded successfully:', src); 
       setImgLoaded(true);
     };
 
@@ -163,7 +155,6 @@ className="text-4xl sm:text-5xl font-bold text-[#4B2E2B] mb-4">
         </p>
       </div>
 
-      {/* Products Grid - Scrollable on mobile */}
       <div className="max-w-7xl mx-auto">
         {products.length === 0 ? (
           <div className="text-center text-gray-500">
@@ -171,7 +162,6 @@ className="text-4xl sm:text-5xl font-bold text-[#4B2E2B] mb-4">
           </div>
         ) : (
           <>
-            {/* Desktop Grid (hidden on mobile) */}
             <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {products.map((product) => (
                 <div
@@ -180,7 +170,6 @@ className="text-4xl sm:text-5xl font-bold text-[#4B2E2B] mb-4">
 
                   className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col"
                 >
-                  {/* Product Image */}
                   <div className="aspect-square bg-white overflow-hidden flex items-center justify-center">
                     <ProductImage
                       src={product.image}
@@ -201,12 +190,12 @@ className="text-4xl sm:text-5xl font-bold text-[#4B2E2B] mb-4">
                     {/* Pricing */}
                     <div className="flex justify-around gap-10 mb-6">
                       {product.originalPrice > product.salePrice ? (
-                        <span className="text-gray-400 line-through text-sm">
-                          ৳ {product.originalPrice.toFixed(2)}
+                        <span className="text-gray-400 riyal-symbol line-through text-sm">
+                           {product.originalPrice.toFixed(2)}
                         </span>
                       ) : null}
                       <span className="text-black font-bold">
-                        ৳ {product.salePrice.toFixed(2)}
+                         {product.salePrice.toFixed(2)}
                       </span>
                     </div>
 
@@ -222,7 +211,6 @@ className="text-4xl sm:text-5xl font-bold text-[#4B2E2B] mb-4">
               ))}
             </div>
 
-            {/* Mobile Scrollable (visible only on mobile) */}
             <div className="sm:hidden overflow-x-auto pb-4 -mx-4 px-4">
               <div className="flex gap-4" style={{ minWidth: 'min-content' }}>
                 {products.map((product) => (
@@ -230,7 +218,6 @@ className="text-4xl sm:text-5xl font-bold text-[#4B2E2B] mb-4">
                     key={product.id}
                     className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col min-w-[280px] max-w-[280px] flex-shrink-0"
                   >
-                    {/* Product Image */}
                     <div className="aspect-square bg-white overflow-hidden flex items-center justify-center">
                       <ProductImage
                         src={product.image}
@@ -252,15 +239,14 @@ className="text-4xl sm:text-5xl font-bold text-[#4B2E2B] mb-4">
                       <div className="flex justify-between items-center mb-4">
                         {product.originalPrice > product.salePrice ? (
                           <span className="text-gray-400 line-through text-sm">
-                            ৳ {product.originalPrice.toFixed(2)}
+                             {product.originalPrice.toFixed(2)}
                           </span>
                         ) : null}
                         <span className="text-black font-bold">
-                          ৳ {product.salePrice.toFixed(2)}
+                           {product.salePrice.toFixed(2)}
                         </span>
                       </div>
 
-                      {/* Button */}
                       <button 
                        onClick={() => handleExploreClick(product.id)}
                       className="w-full bg-[#4B2E2B] hover:bg-[#5a3a36] text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 text-sm">
